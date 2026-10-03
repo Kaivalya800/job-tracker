@@ -18,3 +18,14 @@ apps.append(new_app)
 print("--- all apps ---")
 for app in apps:
     print(app["company"], "-", app["status"])
+
+company = input("Company: ")
+role = input("Role: ")
+status = input("Status: ")
+
+new_app = {"company": company, "role": role, "status": status}
+apps.append(new_app)
+
+print("--- after adding yours ---")
+for app in apps:
+    print(app["company"], "-", app["role"], "-", app["status"])
