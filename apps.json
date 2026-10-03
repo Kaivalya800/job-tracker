@@ -8,5 +8,15 @@
     "company": "google",
     "role": "PM Intern",
     "status": "applied"
+  },
+  {
+    "company": "BD",
+    "role": "swe intern",
+    "status": "applied"
+  },
+  {
+    "company": "bny",
+    "role": "swe intern",
+    "status": "interview"
   }
 ]

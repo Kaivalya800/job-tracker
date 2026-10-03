@@ -17,23 +17,33 @@ apps = load_apps()
 for app in apps:
     print(app["company"], "-", app["status"])
 
-print("--- interviews only ---")
-for app in apps:
-    if app["status"] == "interview":
-        print(app["company"], "-", app["role"])
+while True:
+    print("\n1. Add application")
+    print("2. View all")
+    print("3. Filter by status")
+    print("4. Quit")
+    choice = input("Choose: ")
 
-print("--- all apps ---")
-for app in apps:
-    print(app["company"], "-", app["status"])
+    if choice == "1":
+        company = input("Company: ")
+        role = input("Role: ")
+        status = input("Status: ")
+        apps.append({"company": company, "role": role, "status": status})
+        save_apps(apps)
+        print("Saved!")
 
-company = input("Company: ")
-role = input("Role: ")
-status = input("Status: ")
+    elif choice == "2":
+        for app in apps:
+            print(app["company"], "-", app["role"], "-", app["status"])
 
-new_app = {"company": company, "role": role, "status": status}
-apps.append(new_app)
-save_apps(apps)
+    elif choice == "3":
+        wanted = input("Which status? ")
+        for app in apps:
+            if app["status"] == wanted:
+                print(app["company"], "-", app["role"])
 
-print("--- after adding yours ---")
-for app in apps:
-    print(app["company"], "-", app["role"], "-", app["status"])
+    elif choice == "4":
+        break
+
+    else:
+        print("Invalid choice, try again.")
