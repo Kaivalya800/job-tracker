@@ -26,13 +26,29 @@ while True:
         company = input("Company: ")
         role = input("Role: ")
         status = input("Status: ")
-        apps.append({"company": company, "role": role, "status": status})
+        date_applied = input("Date applied (YYYY-MM-DD): ")
+        referral = input("Referral (or leave blank): ")
+        link = input("Link: ")
+        apps.append({"company": company,
+                      "role": role,
+                      "status": status,
+                      "date_applied": date_applied,
+                      "referral": referral,
+                      "link": link
+        })
         save_apps(apps)
         print("Saved!")
 
     elif choice == "2":
         for app in apps:
-            print(app["company"], "-", app["role"], "-", app["status"])
+            print(
+                app["company"], "-",
+                app["role"], "-",
+                app["status"], "-",
+                app.get("date_applied", "no date"), "-",
+                app.get("referral", "none") or "none", "-",
+                app.get("link", "no link")
+            )
 
     elif choice == "3":
         wanted = input("Which status? ")
