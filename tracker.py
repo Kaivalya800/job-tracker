@@ -14,8 +14,6 @@ def save_apps(apps):
         json.dump(apps, f, indent=2)
 
 apps = load_apps()
-for app in apps:
-    print(app["company"], "-", app["status"])
 
 while True:
     print("\n1. Add application")
@@ -38,10 +36,14 @@ while True:
 
     elif choice == "3":
         wanted = input("Which status? ")
+        found = False
         for app in apps:
-            if app["status"] == wanted:
+            if app["status"].lower() == wanted.lower():
                 print(app["company"], "-", app["role"])
-
+                found = True
+        if not found:
+            print("No applications with that status.")
+            
     elif choice == "4":
         break
 
