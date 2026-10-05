@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head><title>Job Tracker</title></head>
+<body>
+  <h1>Job Tracker</h1>
+
+  <form id="form">
+    <input id="company" placeholder="Company" required>
+    <input id="role" placeholder="Role" required>
+    <input id="status" placeholder="Status" required>
+    <input id="date_applied" type="date">
+    <input id="referral" placeholder="Referral">
+    <input id="link" placeholder="Link">
+    <button type="submit">Add</button>
+  </form>
+
+  <table border="1">
+    <thead>
+      <tr><th>Company</th><th>Role</th><th>Status</th><th>Date</th><th>Referral</th><th>Link</th></tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+  <script>
+    async function loadApps() {
+      const res = await fetch("/applications");
+      const apps = await res.json();
+      const rows = document.getElementById("rows");
+      rows.innerHTML = "";
+      for (const a of apps) {
+        const tr = document.createElement("tr");
+        const values = [a.company, a.role, a.status, a.date_applied, a.referral, a.link];
+        for (const value of values) {
+          const td = document.createElement("td");
+          td.textContent = value || "";
+          tr.appendChild(td);
+        }
+        rows.appendChild(tr);
+      }
+    }
+
+    document.getElementById("form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const body = {};
+      for (const id of ["company", "role", "status", "date_applied", "referral", "link"]) {
+        body[id] = document.getElementById(id).value;
+      }
+      await fetch("/applications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      event.target.reset();
+      loadApps();
+    });
+
+    loadApps();
+  </script>
+</body>
+</html>
