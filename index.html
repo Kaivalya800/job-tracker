@@ -16,25 +16,70 @@
 
   <table border="1">
     <thead>
-      <tr><th>Company</th><th>Role</th><th>Status</th><th>Date</th><th>Referral</th><th>Link</th></tr>
+      <tr><th>Company</th><th>Role</th><th>Status</th><th>Date</th><th>Referral</th><th>Link</th><th>Actions</th></tr>
     </thead>
     <tbody id="rows"></tbody>
   </table>
 
   <script>
+    const STATUSES = ["applied", "OA", "interview", "offer", "rejected"];
+
     async function loadApps() {
       const res = await fetch("/applications");
       const apps = await res.json();
       const rows = document.getElementById("rows");
       rows.innerHTML = "";
+
       for (const a of apps) {
         const tr = document.createElement("tr");
-        const values = [a.company, a.role, a.status, a.date_applied, a.referral, a.link];
-        for (const value of values) {
+
+        function addCell(text) {
           const td = document.createElement("td");
-          td.textContent = value || "";
+          td.textContent = text || "";
           tr.appendChild(td);
         }
+
+        addCell(a.company);
+        addCell(a.role);
+
+        // status dropdown
+        const statusTd = document.createElement("td");
+        const select = document.createElement("select");
+        const options = STATUSES.includes(a.status) ? STATUSES : [...STATUSES, a.status];
+        for (const s of options) {
+          const opt = document.createElement("option");
+          opt.value = s;
+          opt.textContent = s;
+          if (s === a.status) opt.selected = true;
+          select.appendChild(opt);
+        }
+        select.addEventListener("change", async () => {
+          await fetch("/applications/" + a.id, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ...a, status: select.value }),
+          });
+          loadApps();
+        });
+        statusTd.appendChild(select);
+        tr.appendChild(statusTd);
+
+        addCell(a.date_applied);
+        addCell(a.referral);
+        addCell(a.link);
+
+        // delete button
+        const actionTd = document.createElement("td");
+        const del = document.createElement("button");
+        del.textContent = "Delete";
+        del.addEventListener("click", async () => {
+          if (!confirm("Delete " + a.company + "?")) return;
+          await fetch("/applications/" + a.id, { method: "DELETE" });
+          loadApps();
+        });
+        actionTd.appendChild(del);
+        tr.appendChild(actionTd);
+
         rows.appendChild(tr);
       }
     }
